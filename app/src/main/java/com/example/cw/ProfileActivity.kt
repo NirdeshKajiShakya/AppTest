@@ -134,17 +134,17 @@ fun ProfileBody() {
                     contentScale = ContentScale.Crop
                 )
                 Column {
-                    Text("97K")
+                    Text("0")
                     Text("Posts")
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("1M")
+                    Text("0M")
                     Text("Followers")
                 }
                 Column {
-                    Text("997.8K")
+                    Text("0.0K")
                     Text("Followings")
                 }
 
