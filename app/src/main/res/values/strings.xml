@@ -2,4 +2,7 @@
     <string name="app_name">Cw</string>
     <string name="title_activity_profile_acitivity">ProfileAcitivity</string>
     <string name="title_activity_spotify">SpotifyActivity</string>
+    <string name="title_activity_signin">SigninActivity</string>
+    <string name="title_activity_signup">SignupActivity</string>
+    <string name="title_activity_card">CardActivity</string>
 </resources>

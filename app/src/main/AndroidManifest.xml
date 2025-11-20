@@ -12,6 +12,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cw">
         <activity
+            android:name=".CardActivity"
+            android:exported="false"
+            android:label="@string/title_activity_card"
+            android:theme="@style/Theme.Cw" />
+        <activity
+            android:name=".SignupActivity"
+            android:exported="true"
+            android:label="@string/title_activity_signup"
+            android:theme="@style/Theme.Cw" />
+        <activity
+            android:name=".SigninActivity"
+            android:exported="true"
+            android:label="@string/title_activity_signin"
+            android:theme="@style/Theme.Cw">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".SpotifyActivity"
             android:exported="true"
             android:label="@string/title_activity_spotify"
