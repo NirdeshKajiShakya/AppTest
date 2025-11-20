@@ -94,6 +94,7 @@ fun CardBody(){
                     )
                 }
             }
+            Spacer(modifier = Modifier.size(40.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

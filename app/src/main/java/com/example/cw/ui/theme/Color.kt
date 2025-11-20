@@ -6,6 +6,8 @@ val Blue = Color(0xFF007AFF)
 
 val BlueLight = Color(0xFFE3F7FC)
 
+val Orange = Color(0xFFFF9E6A)
+
 val Green = Color(0xFF4CAF50)
 
 val GreenForCardBG = Color(0xFF8DC48E)

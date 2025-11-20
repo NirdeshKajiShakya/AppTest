@@ -12,8 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cw">
         <activity
+            android:name=".CardViewActivity"
+            android:exported="true"
+            android:label="@string/title_activity_card_view"
+            android:theme="@style/Theme.Cw" />
+        <activity
             android:name=".CardActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_card"
             android:theme="@style/Theme.Cw" />
         <activity
