@@ -1,6 +1,9 @@
 package com.example.cw
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,15 +30,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -53,6 +59,7 @@ import com.example.cw.ui.theme.Black
 import com.example.cw.ui.theme.Blue
 import com.example.cw.ui.theme.BlueLight
 import com.example.cw.ui.theme.White
+import kotlinx.coroutines.launch
 
 class SigninActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +77,15 @@ fun LoginBody() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
-    Scaffold { padding ->
+
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ){ padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -222,7 +236,15 @@ fun LoginBody() {
             )
 
             Button(
-                onClick = {},
+                onClick = {
+                    Toast.makeText(context, "Logged in", Toast.LENGTH_SHORT).show()
+                    // Go to DashboardActivity
+                    val intent = Intent(context, DashboardActivity::class.java)
+                    context.startActivity(intent)
+
+                    // Finish SignInActivity
+                    (context as Activity).finish()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp)

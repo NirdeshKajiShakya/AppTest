@@ -12,6 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cw">
         <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:label="@string/title_activity_dashboard_anctivity"
+            android:theme="@style/Theme.Cw" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/Theme.Cw" />
+        <activity
             android:name=".CardViewActivity"
             android:exported="true"
             android:label="@string/title_activity_card_view"
