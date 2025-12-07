@@ -1,4 +1,4 @@
-package com.example.cw
+package com.example.cw.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.cw.R
 
 class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

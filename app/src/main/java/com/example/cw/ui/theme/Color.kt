@@ -2,6 +2,8 @@ package com.example.cw.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val DarkCream = Color(0xFFFFF3CC)
+val Cream = Color(0xFFFFF9E6)
 val Blue = Color(0xFF007AFF)
 
 val BlueLight = Color(0xFFE3F7FC)

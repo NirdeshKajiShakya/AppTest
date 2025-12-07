@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "724630972304",
+    "firebase_url": "https://cwwork-302bb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cwwork-302bb",
+    "storage_bucket": "cwwork-302bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724630972304:android:658caff4a76dcb403b7515",
+        "android_client_info": {
+          "package_name": "com.example.cw"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF88om2a8ZEEkV137dEUzqp2J8iB-GUSA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

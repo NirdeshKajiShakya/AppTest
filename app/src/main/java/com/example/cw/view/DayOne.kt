@@ -1,4 +1,4 @@
-package com.example.cw
+package com.example.cw.view
 
 fun main() {
     //cw1()

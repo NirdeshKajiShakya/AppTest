@@ -1,4 +1,4 @@
-package com.example.cw
+package com.example.cw.view
 
 import android.app.Activity
 import android.content.Intent
@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,11 +56,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.cw.R
 import com.example.cw.ui.theme.Black
 import com.example.cw.ui.theme.Blue
 import com.example.cw.ui.theme.BlueLight
 import com.example.cw.ui.theme.White
-import kotlinx.coroutines.launch
 
 class SigninActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +79,7 @@ fun LoginBody() {
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
 
