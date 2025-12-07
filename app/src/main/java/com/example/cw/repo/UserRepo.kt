@@ -12,7 +12,7 @@ interface UserRepo {
 
     fun forgotPassword(email: String, callback: (Boolean, String) -> Unit)
 
-    fun getUserByID(userID: String, callback: (Boolean, String, UserModel) -> Unit)
+    fun getUserByID(userID: String, callback: (Boolean, String, UserModel?) -> Unit)
 
     fun getAllUsers(callback: (Boolean, String, List<UserModel>) -> Unit)
 
