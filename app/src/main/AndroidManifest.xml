@@ -17,11 +17,6 @@
             android:label="@string/title_activity_dashboard_anctivity"
             android:theme="@style/Theme.Cw" />
         <activity
-            android:name=".SplashActivity"
-            android:exported="true"
-            android:label="@string/title_activity_splash"
-            android:theme="@style/Theme.Cw" />
-        <activity
             android:name=".view.CardViewActivity"
             android:exported="true"
             android:label="@string/title_activity_card_view"
@@ -32,7 +27,7 @@
             android:label="@string/title_activity_card"
             android:theme="@style/Theme.Cw" />
         <activity
-            android:name=".view.SignupActivity"
+            android:name=".view.UserRegistrationActivity"
             android:exported="true"
             android:label="@string/title_activity_signup"
             android:theme="@style/Theme.Cw" />
