@@ -1,6 +1,7 @@
 package com.example.cw.view
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
@@ -71,10 +73,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.cw.R
+import com.example.cw.model.ProductModel
+import com.example.cw.model.ProductViewModel
+import com.example.cw.repo.ProductRepoImpl
 import kotlinx.coroutines.delay
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import java.util.Locale
 
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +102,7 @@ data class NavItem(val name: String, val icon: ImageVector)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardView() {
+    val context = LocalContext.current
     val activity = (LocalContext.current as? Activity)
     var selectedIndex by remember { mutableStateOf(0) }
 
@@ -102,6 +114,19 @@ fun DashboardView() {
     )
 
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    val intent = Intent(context, ProductAddActivity::class.java)
+                    context.startActivity(intent)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Product",
+                )
+            }
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Dashboard") },
@@ -155,10 +180,17 @@ fun DashboardView() {
 
 @Composable
 private fun HomeTab() {
+    val context = LocalContext.current
+    val productViewModel = remember { ProductViewModel(ProductRepoImpl()) }
+    val products by productViewModel.allProducts.observeAsState(initial = emptyList())
+
+    LaunchedEffect(Unit) {
+        productViewModel.getAllProducts()
+    }
+
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(500.dp)
+            .fillMaxSize()
             .background(DarkCream)
     ){
         LazyColumn(
@@ -168,13 +200,88 @@ private fun HomeTab() {
         ) {
             item { SearchBarStatic() }
             item { LocationBar() }
-            item { AdPager(
-                items = listOf(
-                    R.drawable.orangebg, // replace/add more drawables
-                    R.drawable.orangebg,
-                    R.drawable.orangebg
+            item {
+                AdPager(
+                    items = listOf(
+                        R.drawable.orangebg, // replace/add more drawables
+                        R.drawable.orangebg,
+                        R.drawable.orangebg
+                    )
                 )
-            )}
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Section Header with "View All" button
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Products",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Black
+                    )
+                    Button(
+                        onClick = {
+                            val intent = Intent(context, ProductListActivity::class.java)
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Blue)
+                    ) {
+                        Text("View All", color = White)
+                    }
+                }
+            }
+
+            // Display Products
+            if (products.isNullOrEmpty()) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        colors = CardDefaults.cardColors(containerColor = Cream),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                "No products available",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                "Add your first product using the + button",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            } else {
+                val productList = products ?: emptyList()
+                val displayProducts = productList.take(5)
+                displayProducts.forEach { product ->
+                    item {
+                        ProductCard(
+                            product = product,
+                            onClick = {
+                                val intent = Intent(context, ProductListActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -390,6 +497,93 @@ private fun SearchBarStatic() {
                 cursorColor = Color.Transparent
             )
         )
+    }
+}
+
+@Composable
+fun ProductCard(
+    product: ProductModel,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Cream),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Product Image Placeholder
+            Box(
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(80.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(DarkCream),
+                contentAlignment = Alignment.Center
+            ) {
+                if (product.productImageURL.isNotEmpty()) {
+                    // In a real app, you'd use Coil or Glide to load the image
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Product Image",
+                        tint = Color.Gray,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "No Image",
+                        tint = Color.Gray,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Product Details
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = product.productName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = product.productDescription,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    maxLines = 2
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "$${String.format(Locale.US, "%.2f", product.productPrice)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Blue
+                )
+            }
+
+            // Arrow Icon
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = "View Product",
+                tint = Color.Gray,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
     }
 }
 

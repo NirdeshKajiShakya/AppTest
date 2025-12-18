@@ -37,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,10 +56,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cw.R
+import com.example.cw.model.UserViewModel
+import com.example.cw.repo.UserRepoImpl
 import com.example.cw.ui.theme.Black
 import com.example.cw.ui.theme.Blue
 import com.example.cw.ui.theme.BlueLight
 import com.example.cw.ui.theme.White
+import com.google.firebase.auth.FirebaseAuth
 
 class SigninActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,9 +80,12 @@ fun LoginBody() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
+    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
+    val userRepository = remember { UserRepoImpl() }
+    val firebaseAuth = FirebaseAuth.getInstance()
 
 
 
@@ -238,13 +243,48 @@ fun LoginBody() {
 
             Button(
                 onClick = {
-                    Toast.makeText(context, "Logged in", Toast.LENGTH_SHORT).show()
-                    // Go to DashboardActivity
-                    val intent = Intent(context, DashboardActivity::class.java)
-                    context.startActivity(intent)
+                    // Validate inputs
+                    if (email.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
 
-                    // Finish SignInActivity
-                    (context as Activity).finish()
+                    isLoading = true
+
+                    // Authenticate user with Firebase
+                    userViewModel.login(email, password) { isSuccess, message ->
+                        if (isSuccess) {
+                            // Get current user ID from Firebase Auth
+                            val userId = firebaseAuth.currentUser?.uid
+                            if (userId != null) {
+                                // Verify user exists in database using repository
+                                userRepository.getUserByID(userId) { dbSuccess, _, userModel ->
+                                    isLoading = false
+                                    if (dbSuccess && userModel != null) {
+                                        // User exists in database - Login successful
+                                        Toast.makeText(context, "Login successful! Welcome ${userModel.firstName}", Toast.LENGTH_SHORT).show()
+
+                                        // Navigate to DashboardActivity
+                                        val intent = Intent(context, DashboardActivity::class.java)
+                                        intent.putExtra("userId", userId)
+                                        context.startActivity(intent)
+
+                                        // Finish SignInActivity
+                                        (context as Activity).finish()
+                                    } else {
+                                        // User not in database
+                                        Toast.makeText(context, "User not found in database", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } else {
+                                isLoading = false
+                                Toast.makeText(context, "Authentication error", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            isLoading = false
+                            Toast.makeText(context, "Login failed: $message", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -254,9 +294,10 @@ fun LoginBody() {
                     defaultElevation = 15.dp
                 ),
                 shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(BlueLight)
+                colors = ButtonDefaults.buttonColors(BlueLight),
+                enabled = !isLoading
             ) {
-                Text("Log In", style = TextStyle(color = Black))
+                Text(if (isLoading) "Logging in..." else "Log In", style = TextStyle(color = Black))
             }
 
             Text(buildAnnotatedString {

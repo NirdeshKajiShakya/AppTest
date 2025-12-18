@@ -9,11 +9,11 @@ class ProductRepoImpl : ProductRepo {
     
     val database = FirebaseDatabase.getInstance()
     val ref: DatabaseReference = database.getReference("Products")
-    
-    override fun getAllProducts(callback: (Boolean, String, List<Any>) -> Unit) {
+
+    override fun getAllProducts(callback: (Boolean, String, List<ProductModel>) -> Unit) {
         ref.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                val productList = mutableListOf<Any>()
+                val productList = mutableListOf<ProductModel>()
                 for (snapshot in it.result.children) {
                     val product = snapshot.getValue(ProductModel::class.java)
                     product?.let { p -> productList.add(p) }
@@ -43,10 +43,14 @@ class ProductRepoImpl : ProductRepo {
         model : ProductModel,
         callback: (Boolean, String) -> Unit
     ) {
-        val newRef = ref.push()
-        val productID = newRef.key ?: ""
-        val productWithID = model.copy(productID = productID)
-        newRef.setValue(productWithID).addOnCompleteListener {
+        val id = ref.push().key
+        if (id == null) {
+            callback(false, "Failed to generate product ID")
+            return
+        }
+        model.productID = id
+
+        ref.child(id).setValue(model).addOnCompleteListener {
             if (it.isSuccessful) {
                 callback(true, "Product added successfully")
             } else {
@@ -69,11 +73,10 @@ class ProductRepoImpl : ProductRepo {
     }
 
     override fun updateProduct(
-        productID: String,
         model : ProductModel,
         callback: (Boolean, String) -> Unit
     ) {
-        ref.child(productID).updateChildren(model.toMap()).addOnCompleteListener {
+        ref.child(model.productID).updateChildren(model.toMap()).addOnCompleteListener {
             if (it.isSuccessful) {
                 callback(true, "Product updated successfully")
             } else {

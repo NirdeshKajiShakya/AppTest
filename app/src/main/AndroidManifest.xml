@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cw">
         <activity
+            android:name=".view.ProductAddActivity"
+            android:exported="true"
+            android:label="@string/title_activity_product_add"
+            android:theme="@style/Theme.Cw" />
+        <activity
             android:name=".view.DashboardActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_dashboard_anctivity"
             android:theme="@style/Theme.Cw" />
         <activity
@@ -75,6 +82,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.ProductListActivity"
+            android:exported="true"
+            android:label="Product List"
+            android:theme="@style/Theme.Cw" />
     </application>
 
 </manifest>

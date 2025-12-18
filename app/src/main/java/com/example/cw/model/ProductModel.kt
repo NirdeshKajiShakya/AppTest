@@ -1,19 +1,19 @@
 package com.example.cw.model
 
 data class ProductModel(
-    val productID: String = "",
-    val productName: String = "",
-    val productDescription: String = "",
-    val productPrice: Double = 0.0,
-    val productImageURL: String = ""
+    var productID: String = "",
+    var productName: String = "",
+    var productDescription: String = "",
+    var productPrice: Double = 0.0,
+    var productImageURL: String = ""
 ){
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "ProductID" to productID,
-            "ProductName" to productName,
-            "ProductDescription" to productDescription,
-            "ProductPrice" to productPrice,
-            "ProductImageURL" to productImageURL
+            "productID" to productID,
+            "productName" to productName,
+            "productDescription" to productDescription,
+            "productPrice" to productPrice,
+            "productImageURL" to productImageURL
         )
     }
 }

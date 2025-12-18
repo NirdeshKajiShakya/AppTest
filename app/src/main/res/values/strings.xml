@@ -8,4 +8,6 @@
     <string name="title_activity_card_view">CardViewActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="title_activity_dashboard_anctivity">DashboardAnctivity</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="title_activity_product_add">ProductAddActivity</string>
 </resources>
